@@ -42,7 +42,7 @@ export default function handleEvents ({events, callback, s3, bucket, stage, lamb
 }
 
 function isValidParams (params) {
-	return params && params.switch && params.status && ['off', 'on'].includes(params.status);
+	return params && params.switch && params.status && ['off', 'on'].indexOf(params.status) !== -1;
 }
 
 function validateToggle ({params, s3, stage, bucket, switchesDefinition, status, user, lambda, callback}) {

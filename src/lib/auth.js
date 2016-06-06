@@ -17,7 +17,7 @@ export function isUserAllowed (email, switchDescription, userGroups) {
 	const canModify = switchDescription.canModify;
 
 	if (canModify && canModify.length > 0) {
-		return canModify.find(group => userGroups[group] && userGroups[group].includes(email));
+		return canModify.find(group => userGroups[group] && userGroups[group].indexOf(email) !== -1);
 	} else {
 		return true;
 	}
