@@ -49,6 +49,18 @@ Resources:
                         Action:
                             - "lambda:InvokeFunction"
                         Resource: "*"
+                - PolicyName: s3
+                  PolicyDocument:
+                    Statement:
+                        Effect: Allow
+                        Action:
+                            - "s3:GetObject"
+                        Resource:
+                            - Fn::Join:
+                                - ""
+                                - - "arn:aws:s3:::facia-switches/"
+                                  - Ref: Stage
+                                  - "/*"
     SwitchesLambda:
         Type: AWS::Lambda::Function
         Properties:
