@@ -20,6 +20,16 @@ packages:
                 PROD:
                     name: switchboard-api-lambda-PROD-SwitchesLambda-ZPMFKILIJXN8
                     filename: artifact.zip
+    statusLambda:
+        type: aws-lambda
+        data:
+            functions:
+                CODE:
+                    name: switchboard-api-lambda-CODE-StatusLambda-EQ5H6SXX63I5
+                    filename: artifact.zip
+                PROD:
+                    name: switchboard-api-lambda-PROD-StatusLambda-10V9LPEY4AXDY
+                    filename: artifact.zip
 recipes:
     upload:
         actionsBeforeApp:
@@ -27,6 +37,7 @@ recipes:
     lambdas:
         actionsBeforeApp:
             - switchesLambda.updateLambda
+            - statusLambda.updateLambda
     default:
         depends:
             - upload

@@ -63,7 +63,28 @@ Resources:
                             - switchboardAPILambda
                             - switchesLambda
                             - artifact.zip
-            Description: Handle requests
+            Description: Handle switches requests
+            Handler: index.handler
+            MemorySize: 128
+            Role:
+                "Fn::GetAtt": ["ExecutionRole", "Arn"]
+            Runtime: nodejs4.3
+            Timeout: 60
+    StatusLambda:
+        Type: AWS::Lambda::Function
+        Properties:
+            Code:
+                S3Bucket:
+                    Ref: DeployBucket
+                S3Key:
+                    "Fn::Join":
+                        - "/"
+                        -
+                            - Ref: Stage
+                            - switchboardAPILambda
+                            - statusLambda
+                            - artifact.zip
+            Description: Handle status requests
             Handler: index.handler
             MemorySize: 128
             Role:

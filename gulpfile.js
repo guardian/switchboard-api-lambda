@@ -11,10 +11,13 @@ var LAMBDA_SOURCE = 'src/**/*.js';
 var DEPLOY_SOURCE = 'conf/deploy.yml';
 var CLOUDFORMATION_SOURCE = 'conf/cloudformation.yml';
 
-gulp.task('compile', ['compile-switches']);
+gulp.task('compile', ['compile-switches', 'compile-status']);
 
 gulp.task('compile-switches', function () {
 	return exec('rollup -c rollup.config.switches.js');
+});
+gulp.task('compile-status', function () {
+	return exec('rollup -c rollup.config.status.js');
 });
 
 gulp.task('compile-dev', ['compile'], function () {
@@ -65,8 +68,14 @@ gulp.task('archive-switches', ['compile-switches'], function () {
 		.pipe(gulp.dest('tmp/riffraff/packages/switchesLambda'))
 		.pipe(gulp.dest('tmp/riffraff/packages/switchboardAPILambda/switchesLambda'));
 });
+gulp.task('archive-status', ['compile-status'], function () {
+	return gulp.src('tmp/lambda/status.js')
+		.pipe(zip('artifact.zip'))
+		.pipe(gulp.dest('tmp/riffraff/packages/statusLambda'))
+		.pipe(gulp.dest('tmp/riffraff/packages/switchboardAPILambda/statusLambda'));
+});
 
-gulp.task('archive', ['riffraff-deploy', 'archive-switches']);
+gulp.task('archive', ['riffraff-deploy', 'archive-switches', 'archive-status']);
 
 gulp.task('package', ['archive'], function () {
 	return gulp.src('tmp/riffraff/**/*')
