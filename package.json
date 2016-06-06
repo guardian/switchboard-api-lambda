@@ -12,7 +12,7 @@
     "deploy": "gulp deploy"
   },
   "devDependencies": {
-    "aws-sdk": "^2.3.16",
+    "aws-sdk": "^2.3.17",
     "babel-preset-es2015-rollup": "^1.1.1",
     "exec-chainable": "0.0.3",
     "gulp": "^3.9.1",
@@ -20,7 +20,7 @@
     "gulp-yaml": "^1.0.1",
     "gulp-zip": "^3.2.0",
     "node-riffraff-artefact": "^1.7.2",
-    "rollup": "^0.26.3",
+    "rollup": "^0.26.7",
     "rollup-plugin-babel": "^2.4.0",
     "rollup-plugin-commonjs": "^2.2.1",
     "rollup-plugin-node-resolve": "^1.5.0",

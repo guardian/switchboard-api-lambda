@@ -4,30 +4,30 @@ packages:
     switchboardAPILambda:
         type: aws-s3
         data:
-            bucket: lambda-boilerplate-dist
+            bucket: facia-dist
             cacheControl: "public, max-age=315360000"
-            prefixPackage: false
+            prefixPackage: true
             prefixStack: false
             prefixStage: true
             publicReadAcl: false
-    lambda:
+    switchesLambda:
         type: aws-lambda
         data:
             functions:
                 CODE:
-                    name: switchboard-api-lambda-CODE-Lambda-1EEL6RAFUG96I
+                    name: switchboard-api-lambda-CODE-SwitchesLambda-UT3HFLJJ757G
                     filename: artifact.zip
                 PROD:
-                    name: switchboard-api-lambda-PROD-Lambda-1M0F3HAOK9Y2L
+                    name: switchboard-api-lambda-PROD-SwitchesLambda-ZPMFKILIJXN8
                     filename: artifact.zip
 recipes:
     upload:
         actionsBeforeApp:
             - switchboardAPILambda.uploadStaticFiles
-    lambda:
+    lambdas:
         actionsBeforeApp:
-            - lambda.updateLambda
+            - switchesLambda.updateLambda
     default:
         depends:
             - upload
-            - lambda
+            - lambdas

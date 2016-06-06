@@ -3,13 +3,13 @@ import commonjs from 'rollup-plugin-commonjs';
 import babel from 'rollup-plugin-babel';
 
 export default {
-	entry: 'src/index.js',
+	entry: 'src/switches.js',
 	plugins: [
 		babel(),
 		nodeResolve(),
 		commonjs()
 	],
 	format: 'cjs',
-	dest: 'tmp/lambda/index.js',
+	dest: 'tmp/lambda/switches.js',
 	external: ['aws-sdk']
 };

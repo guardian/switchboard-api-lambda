@@ -7,12 +7,14 @@ var path = require('path');
 process.env.ARTEFACT_PATH = __dirname;
 var riffraff = require('node-riffraff-artefact');
 
-var LAMBDA_SOURCE = 'src/*.js';
+var LAMBDA_SOURCE = 'src/**/*.js';
 var DEPLOY_SOURCE = 'conf/deploy.yml';
 var CLOUDFORMATION_SOURCE = 'conf/cloudformation.yml';
 
-gulp.task('compile', function () {
-	return exec('rollup -c rollup.config.js');
+gulp.task('compile', ['compile-switches']);
+
+gulp.task('compile-switches', function () {
+	return exec('rollup -c rollup.config.switches.js');
 });
 
 gulp.task('compile-dev', ['compile'], function () {
@@ -57,12 +59,14 @@ gulp.task('riffraff-deploy-dev', ['riffraff-deploy'], function () {
 
 gulp.task('dev', ['lint-dev', 'cloudformation-dev', 'compile-dev', 'riffraff-deploy-dev']);
 
-gulp.task('archive', ['compile', 'riffraff-deploy'], function () {
-	return gulp.src('tmp/lambda/**/*')
+gulp.task('archive-switches', ['compile-switches'], function () {
+	return gulp.src('tmp/lambda/switches.js')
 		.pipe(zip('artifact.zip'))
-		.pipe(gulp.dest('tmp/riffraff/packages/lambda'))
-		.pipe(gulp.dest('tmp/riffraff/packages/switchboardAPILambda'));
+		.pipe(gulp.dest('tmp/riffraff/packages/switchesLambda'))
+		.pipe(gulp.dest('tmp/riffraff/packages/switchboardAPILambda/switchesLambda'));
 });
+
+gulp.task('archive', ['riffraff-deploy', 'archive-switches']);
 
 gulp.task('package', ['archive'], function () {
 	return gulp.src('tmp/riffraff/**/*')
