@@ -66,7 +66,7 @@ function toggle ({switchName, switchStatus, store, switchToToggle, switchesDefin
 	sendEmailIfNecessary({switchToToggle, userGroups: switchesDefinition.userGroups, email, logger})
 	.then(() => {
 		logger.info('Trying to store updated switch');
-		store(newStatus, callback);
+		store(newStatus, (err) => callback(err));
 	})
 	.catch(callback);
 }
