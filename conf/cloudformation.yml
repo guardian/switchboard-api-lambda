@@ -76,7 +76,7 @@ Resources:
                             - switchesLambda
                             - artifact.zip
             Description: Handle switches requests
-            Handler: index.handler
+            Handler: switches.handler
             MemorySize: 128
             Role:
                 "Fn::GetAtt": ["ExecutionRole", "Arn"]
@@ -97,7 +97,7 @@ Resources:
                             - statusLambda
                             - artifact.zip
             Description: Handle status requests
-            Handler: index.handler
+            Handler: status.handler
             MemorySize: 128
             Role:
                 "Fn::GetAtt": ["ExecutionRole", "Arn"]
@@ -118,7 +118,7 @@ Resources:
                             - toggleLambda
                             - artifact.zip
             Description: Handle status requests
-            Handler: index.handler
+            Handler: toggle.handler
             MemorySize: 128
             Role:
                 "Fn::GetAtt": ["ExecutionRole", "Arn"]
