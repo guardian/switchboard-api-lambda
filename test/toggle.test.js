@@ -242,6 +242,12 @@ tap.test('saves the new state when email is sent correctly', test => {
 			invoke (obj, cb) {
 				const payload = JSON.parse(obj.Payload);
 				test.equal(payload.env.application, 'https://switchboard.gutools.co.uk');
+				test.equal(payload.env.switchName, 'canModify');
+				test.equal(payload.env.switchStatus, 'off');
+				test.deepEqual(payload.env.user, {
+					name: 'Long Name',
+					email: 'someone@email.com'
+				});
 				cb(null);
 			}
 		},

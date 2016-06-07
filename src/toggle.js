@@ -1,23 +1,14 @@
 import AWS from 'aws-sdk';
 import {isUserAuthenticated, parseUser, isUserAllowed} from './lib/auth';
-import {STAGE, buildPath} from './lib/env';
+import {STAGE} from './lib/env';
 import {fetchSwitches, fetchStatus} from './lib/fetch';
-import {statusKey} from './lib/keys';
+import {createStatusStore} from './lib/store';
+import {emailSender} from './lib/email';
 
 const s3Module = new AWS.S3();
 const lambdaModule = new AWS.Lambda();
 
 const DEFAULT_BUCKET = 'facia-switches';
-const SENDER = 'aws-cms-fronts@theguardian.com';
-const EMAIL_LAMBDA = 'send-email-lambda-Lambda-K6KFP5O8NU99';
-const EMAIL_TEMPLATE = `
-<html>
-<body>
-Switch {{ switchName }} was turned {{ switchStatus }} by <a href="mailto:{{ user.email }}">{{ user.name }}</a>.
-<br><br>
-Yours, <a href="https://{{ application }}">Switchboard</a>.
-</body>
-</html>`;
 
 export function handler (events, context, callback) {
 	handleEvents({events, callback, s3: s3Module, stage: STAGE, bucket: DEFAULT_BUCKET, lambda: lambdaModule});
@@ -29,13 +20,20 @@ export default function handleEvents ({events, callback, s3, bucket, stage, lamb
 	} else if (!isValidParams(events.params)) {
 		callback(new Error('Invalid input parameters. Missing switch or status.'));
 	} else {
+		const {'switch': switchName, 'status': switchStatus} = events.params;
 		const user = parseUser(events.context);
+		const store = createStatusStore(bucket, stage, s3);
+		const email = emailSender(stage, switchName, switchStatus, user, lambda);
+
 		Promise.all([
 			fetchSwitches({bucket, s3, stage}),
 			fetchStatus({bucket, s3, stage})
 		])
 		.then(([switchesDefinition, status]) => {
-			validateToggle({params: events.params, s3, stage, bucket, switchesDefinition, status, user, lambda, callback});
+			const switchToToggle = switchesDefinition.switches.filter(single => single.name === switchName)[0];
+			if (isValidRequest(switchName, switchStatus, status, switchToToggle, user, switchesDefinition.userGroups, callback)) {
+				toggle({switchName, switchStatus, switchToToggle, switchesDefinition, status, store, email, callback});
+			}
 		})
 		.catch(callback);
 	}
@@ -45,71 +43,39 @@ function isValidParams (params) {
 	return params && params.switch && params.status && ['off', 'on'].indexOf(params.status) !== -1;
 }
 
-function validateToggle ({params, s3, stage, bucket, switchesDefinition, status, user, lambda, callback}) {
-	const switchToToggle = switchesDefinition.switches.filter(single => single.name === params.switch)[0];
-	if (switchToToggle) {
-		validateUser({params, s3, stage, bucket, switchToToggle, switchesDefinition, status, user, lambda, callback});
-	} else {
-		callback(new Error('Invalid switch: ' + params.switch));
-	}
-}
+function isValidRequest (switchName, switchStatus, status, switchToToggle, user, userGroups, callback) {
+	const previousValue = status[switchName];
+	const newValue = switchStatus === 'on';
 
-function validateUser ({params, s3, stage, bucket, switchToToggle, switchesDefinition, status, user, lambda, callback}) {
-	if (user && isUserAllowed(user.email, switchToToggle, switchesDefinition.userGroups)) {
-		validateAction({params, s3, stage, bucket, switchToToggle, switchesDefinition, status, user, lambda, callback});
-	} else {
-		callback(new Error('User is not authorized to toggle ' + switchToToggle.name));
-	}
-}
-
-function validateAction ({params, s3, stage, bucket, switchToToggle, switchesDefinition, status, user, lambda, callback}) {
-	const previousValue = status[switchToToggle.name];
-	const newValue = params.status === 'on';
-	if (previousValue === newValue) {
+	if (!switchToToggle) {
+		callback(new Error('Invalid switch: ' + switchName));
+	} else if (!user || !isUserAllowed(user.email, switchToToggle, userGroups)) {
+		callback(new Error('User is not authorized to toggle ' + switchName));
+	} else if (previousValue === newValue) {
 		callback(null);
 	} else {
-		toggle({value: newValue, s3, stage, bucket, switchToToggle, switchesDefinition, status, user, lambda, callback});
+		return true;
 	}
 }
 
-function toggle ({value, s3, stage, bucket, switchToToggle, switchesDefinition, status, user, lambda, callback}) {
-	const newStatus = Object.assign({}, status, { [switchToToggle.name]: value });
-	sendEmailIfNecessary({switchToToggle, userGroups: switchesDefinition.userGroups, lambda, user, value, stage})
+function toggle ({switchName, switchStatus, store, switchToToggle, switchesDefinition, status, email, callback}) {
+	const value = switchStatus === 'on';
+	const newStatus = Object.assign({}, status, { [switchName]: value });
+	sendEmailIfNecessary({switchToToggle, userGroups: switchesDefinition.userGroups, email})
 	.then(() => {
-		s3.upload({
-			Bucket: bucket,
-			Key: statusKey(stage),
-			Body: JSON.stringify(newStatus),
-			ACL: 'private',
-			ContentType: 'application/json'
-		}, callback);
+		store(newStatus, callback);
 	})
 	.catch(callback);
 }
 
-function sendEmailIfNecessary ({switchToToggle, userGroups, lambda, user, value, stage}) {
+function sendEmailIfNecessary ({switchToToggle, userGroups, email}) {
 	if (switchToToggle.emailOnChange) {
 		const to = switchToToggle.emailOnChange.reduce((emails, group) => {
 			return emails.concat(userGroups[group]);
 		}, []);
 
 		return new Promise((resolve, reject) => {
-			lambda.invoke({
-				FunctionName: EMAIL_LAMBDA,
-				InvocationType: 'RequestResponse',
-				Payload: JSON.stringify({
-					from: SENDER,
-					to: to,
-					subject: 'Switchboard configuration alert',
-					template: EMAIL_TEMPLATE,
-					env: {
-						user,
-						switchName: switchToToggle.name,
-						switchStatus: value ? 'on' : 'off',
-						application: buildPath(stage)
-					}
-				})
-			}, err => {
+			email(to, err => {
 				if (err) {
 					reject(err);
 				} else {
