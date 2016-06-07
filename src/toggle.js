@@ -20,7 +20,7 @@ export default function handleEvents ({events, callback, s3, bucket, stage, lamb
 	} else if (!isValidParams(events.params)) {
 		callback(new Error('Invalid input parameters. Missing switch or status.'));
 	} else {
-		const {'switch': switchName, 'status': switchStatus} = events.params;
+		const {'switch': switchName, 'status': switchStatus} = events.params.path;
 		const user = parseUser(events.context);
 		const store = createStatusStore(bucket, stage, s3);
 		const email = emailSender(stage, switchName, switchStatus, user, lambda);
@@ -39,8 +39,8 @@ export default function handleEvents ({events, callback, s3, bucket, stage, lamb
 	}
 }
 
-function isValidParams (params) {
-	return params && params.switch && params.status && ['off', 'on'].indexOf(params.status) !== -1;
+function isValidParams ({path} = {}) {
+	return path && path.switch && path.status && ['off', 'on'].indexOf(path.status) !== -1;
 }
 
 function isValidRequest (switchName, switchStatus, status, switchToToggle, user, userGroups, callback) {

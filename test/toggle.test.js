@@ -60,7 +60,7 @@ tap.test('fails if S3 cannot get the switches', test => {
 	lambda({
 		events: {
 			context: { 'authorizer-principal-id' : 'me' },
-			params: { switch: 'two', status: 'on' }
+			params: { path: { switch: 'two', status: 'on' } }
 		},
 		bucket: 'bucket',
 		stage: 'STAGE',
@@ -81,7 +81,7 @@ tap.test('fails if parameters are invalid', test => {
 	lambda({
 		events: {
 			context: { 'authorizer-principal-id' : 'me' },
-			params: { switch: 'alreadyOn', status: 'banana' }
+			params: { path: { switch: 'alreadyOn', status: 'banana' } }
 		},
 		bucket: 'bucket',
 		stage: 'STAGE',
@@ -98,7 +98,7 @@ tap.test('fails on invalid switch', test => {
 	lambda({
 		events: {
 			context: { 'authorizer-principal-id' : 'me' },
-			params: { switch: 'missing', status: 'off' }
+			params: { path: { switch: 'missing', status: 'off' } }
 		},
 		bucket: 'bucket',
 		stage: 'STAGE',
@@ -115,7 +115,7 @@ tap.test('denies access to unauthorized users', test => {
 	lambda({
 		events: {
 			context: { 'authorizer-principal-id' : 'me <anon@email.com>' },
-			params: { switch: 'canModify', status: 'off' }
+			params: { path: { switch: 'canModify', status: 'off' } }
 		},
 		bucket: 'bucket',
 		stage: 'STAGE',
@@ -132,7 +132,7 @@ tap.test('does nothing if the switch is already in the desired state', test => {
 	lambda({
 		events: {
 			context: { 'authorizer-principal-id' : 'me <anon@email.com>' },
-			params: { switch: 'alreadyOn', status: 'on' }
+			params: { path: { switch: 'alreadyOn', status: 'on' } }
 		},
 		bucket: 'bucket',
 		stage: 'STAGE',
@@ -148,7 +148,7 @@ tap.test('fails if s3 cannot save the new status', test => {
 	lambda({
 		events: {
 			context: { 'authorizer-principal-id' : 'me <anon@email.com>' },
-			params: { switch: 'alreadyOn', status: 'off' }
+			params: { path: { switch: 'alreadyOn', status: 'off' } }
 		},
 		bucket: 'bucket',
 		stage: 'STAGE',
@@ -172,7 +172,7 @@ tap.test('saves the new state when email should not be sent', test => {
 	lambda({
 		events: {
 			context: { 'authorizer-principal-id' : 'me <anon@email.com>' },
-			params: { switch: 'alreadyOn', status: 'off' }
+			params: { path: { switch: 'alreadyOn', status: 'off' } }
 		},
 		bucket: 'bucket',
 		stage: 'STAGE',
@@ -192,7 +192,7 @@ tap.test('fails if the email cannot be sent', test => {
 	lambda({
 		events: {
 			context: { 'authorizer-principal-id' : 'Long Name <someone@email.com>' },
-			params: { switch: 'canModify', status: 'off' }
+			params: { path: { switch: 'canModify', status: 'off' } }
 		},
 		bucket: 'bucket',
 		stage: 'STAGE',
@@ -229,7 +229,7 @@ tap.test('saves the new state when email is sent correctly', test => {
 	lambda({
 		events: {
 			context: { 'authorizer-principal-id' : 'Long Name <someone@email.com>' },
-			params: { switch: 'canModify', status: 'off' }
+			params: { path: { switch: 'canModify', status: 'off' } }
 		},
 		bucket: 'bucket',
 		stage: 'PROD',
