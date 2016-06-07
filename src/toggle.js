@@ -14,10 +14,11 @@ export function handler (events, context, callback) {
 	handleEvents({events, callback, s3: s3Module, stage: STAGE, bucket: DEFAULT_BUCKET, lambda: lambdaModule});
 }
 
-export default function handleEvents ({events, callback, s3, bucket, stage, lambda}) {
+export default function handleEvents ({events, callback, s3, bucket, stage, lambda, logger = console}) {
 	if (!isUserAuthenticated(events.context)) {
 		callback(new Error('User is not authenticated'));
 	} else if (!isValidParams(events.params)) {
+		logger.error('Invalid parameters', events.params);
 		callback(new Error('Invalid input parameters. Missing switch or status.'));
 	} else {
 		const {'switch': switchName, 'status': switchStatus} = events.params.path;
@@ -30,9 +31,10 @@ export default function handleEvents ({events, callback, s3, bucket, stage, lamb
 			fetchStatus({bucket, s3, stage})
 		])
 		.then(([switchesDefinition, status]) => {
+			logger.info('Able to get switches and status');
 			const switchToToggle = switchesDefinition.switches.filter(single => single.name === switchName)[0];
 			if (isValidRequest(switchName, switchStatus, status, switchToToggle, user, switchesDefinition.userGroups, callback)) {
-				toggle({switchName, switchStatus, switchToToggle, switchesDefinition, status, store, email, callback});
+				toggle({switchName, switchStatus, switchToToggle, switchesDefinition, status, store, email, callback, logger});
 			}
 		})
 		.catch(callback);
@@ -58,23 +60,25 @@ function isValidRequest (switchName, switchStatus, status, switchToToggle, user,
 	}
 }
 
-function toggle ({switchName, switchStatus, store, switchToToggle, switchesDefinition, status, email, callback}) {
+function toggle ({switchName, switchStatus, store, switchToToggle, switchesDefinition, status, email, logger, callback}) {
 	const value = switchStatus === 'on';
 	const newStatus = Object.assign({}, status, { [switchName]: value });
-	sendEmailIfNecessary({switchToToggle, userGroups: switchesDefinition.userGroups, email})
+	sendEmailIfNecessary({switchToToggle, userGroups: switchesDefinition.userGroups, email, logger})
 	.then(() => {
+		logger.info('Trying to store updated switch');
 		store(newStatus, callback);
 	})
 	.catch(callback);
 }
 
-function sendEmailIfNecessary ({switchToToggle, userGroups, email}) {
+function sendEmailIfNecessary ({switchToToggle, userGroups, email, logger}) {
 	if (switchToToggle.emailOnChange) {
 		const to = switchToToggle.emailOnChange.reduce((emails, group) => {
 			return emails.concat(userGroups[group]);
 		}, []);
 
 		return new Promise((resolve, reject) => {
+			logger.info('Trying to send email notification');
 			email(to, err => {
 				if (err) {
 					reject(err);

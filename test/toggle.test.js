@@ -29,10 +29,12 @@ const DEFAULT_S3 = {
 		}
 	}
 };
+const DEFAULT_LOGGER = { info () {}, error () {} };
 
 tap.test('fails if not authenticated', test => {
 	lambda({
 		events: { context: { 'authorizer-principal-id' : '' } },
+		logger: DEFAULT_LOGGER,
 		callback (err) {
 			test.type(err, Error);
 			test.match(err.message, /not authenticated/i);
@@ -47,6 +49,7 @@ tap.test('fails if parameters are missing', test => {
 		bucket: 'bucket',
 		stage: 'STAGE',
 		s3: DEFAULT_S3,
+		logger: DEFAULT_LOGGER,
 		callback (err) {
 			test.type(err, Error);
 			test.match(err.message, /invalid input/i);
@@ -69,6 +72,7 @@ tap.test('fails if S3 cannot get the switches', test => {
 				cb(new Error('aws error'));
 			}
 		},
+		logger: DEFAULT_LOGGER,
 		callback (err) {
 			test.type(err, Error);
 			test.match(err.message, /aws error/i);
@@ -86,6 +90,7 @@ tap.test('fails if parameters are invalid', test => {
 		bucket: 'bucket',
 		stage: 'STAGE',
 		s3: DEFAULT_S3,
+		logger: DEFAULT_LOGGER,
 		callback (err) {
 			test.type(err, Error);
 			test.match(err.message, /invalid input/i);
@@ -103,6 +108,7 @@ tap.test('fails on invalid switch', test => {
 		bucket: 'bucket',
 		stage: 'STAGE',
 		s3: DEFAULT_S3,
+		logger: DEFAULT_LOGGER,
 		callback (err) {
 			test.type(err, Error);
 			test.match(err.message, /invalid switch/i);
@@ -120,6 +126,7 @@ tap.test('denies access to unauthorized users', test => {
 		bucket: 'bucket',
 		stage: 'STAGE',
 		s3: DEFAULT_S3,
+		logger: DEFAULT_LOGGER,
 		callback (err) {
 			test.type(err, Error);
 			test.match(err.message, /not authorized/i);
@@ -137,6 +144,7 @@ tap.test('does nothing if the switch is already in the desired state', test => {
 		bucket: 'bucket',
 		stage: 'STAGE',
 		s3: DEFAULT_S3,
+		logger: DEFAULT_LOGGER,
 		callback (err) {
 			test.ifError(err);
 			test.end();
@@ -160,6 +168,7 @@ tap.test('fails if s3 cannot save the new status', test => {
 				cb(new Error('invalid write'));
 			}
 		}, DEFAULT_S3),
+		logger: DEFAULT_LOGGER,
 		callback (err) {
 			test.type(err, Error);
 			test.match(err.message, /invalid write/i);
@@ -181,6 +190,7 @@ tap.test('saves the new state when email should not be sent', test => {
 				cb(null);
 			}
 		}, DEFAULT_S3),
+		logger: DEFAULT_LOGGER,
 		callback (err) {
 			test.ifError(err);
 			test.end();
@@ -217,6 +227,7 @@ tap.test('fails if the email cannot be sent', test => {
 				cb(new Error('invoke'));
 			}
 		},
+		logger: DEFAULT_LOGGER,
 		callback (err) {
 			test.type(err, Error);
 			test.match(err.message, /invoke/i);
@@ -251,6 +262,7 @@ tap.test('saves the new state when email is sent correctly', test => {
 				cb(null);
 			}
 		},
+		logger: DEFAULT_LOGGER,
 		callback (err) {
 			test.ifError(err);
 			test.end();
