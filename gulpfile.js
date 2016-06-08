@@ -1,30 +1,38 @@
 var gulp = require('gulp');
-var zip = require('gulp-zip');
-var exec  = require('exec-chainable');
-var yaml = require('gulp-yaml');
 var eslint = require('gulp-eslint');
+var foreach = require('gulp-foreach');
+var yaml = require('gulp-yaml');
+var rollup = require('gulp-rollup');
+var zip = require('gulp-zip');
 var path = require('path');
 process.env.ARTEFACT_PATH = __dirname;
 var riffraff = require('node-riffraff-artefact');
+var nodeResolve = require('rollup-plugin-node-resolve');
+var commonjs = require('rollup-plugin-commonjs');
+var babel = require('rollup-plugin-babel');
 
-var LAMBDA_SOURCE = 'src/**/*.js';
+var LAMBDA_SOURCE = 'src/*.js';
+var SOURCE_FILES = 'src/**/*.js';
 var DEPLOY_SOURCE = 'conf/deploy.yml';
 var CLOUDFORMATION_SOURCE = 'conf/cloudformation.yml';
 
-gulp.task('compile', ['compile-switches', 'compile-status', 'compile-toggle']);
-
-gulp.task('compile-switches', function () {
-	return exec('rollup -c rollup.config.switches.js');
-});
-gulp.task('compile-status', function () {
-	return exec('rollup -c rollup.config.status.js');
-});
-gulp.task('compile-toggle', function () {
-	return exec('rollup -c rollup.config.toggle.js');
+gulp.task('compile', function () {
+	return gulp.src(LAMBDA_SOURCE, { read: false})
+		.pipe(rollup({
+			plugins: [
+				babel(),
+				nodeResolve(),
+				commonjs()
+			],
+			format: 'cjs',
+			exports: 'named',
+			external: ['aws-sdk']
+		}))
+		.pipe(gulp.dest('tmp/lambda'));
 });
 
 gulp.task('compile-dev', ['compile'], function () {
-	gulp.watch(LAMBDA_SOURCE, ['compile']);
+	gulp.watch(SOURCE_FILES, ['compile']);
 });
 
 gulp.task('cloudformation', function () {
@@ -40,7 +48,7 @@ gulp.task('cloudformation-dev', ['cloudformation'], function () {
 
 gulp.task('lint', function () {
 	return gulp.src([
-		LAMBDA_SOURCE,
+		SOURCE_FILES,
 		'test/**/*.js'
 	])
 	.pipe(eslint())
@@ -49,7 +57,7 @@ gulp.task('lint', function () {
 });
 
 gulp.task('lint-dev', ['lint'], function () {
-	gulp.watch(LAMBDA_SOURCE, ['lint']);
+	gulp.watch(SOURCE_FILES, ['lint']);
 });
 
 gulp.task('riffraff-deploy', function () {
@@ -65,26 +73,16 @@ gulp.task('riffraff-deploy-dev', ['riffraff-deploy'], function () {
 
 gulp.task('dev', ['lint-dev', 'cloudformation-dev', 'compile-dev', 'riffraff-deploy-dev']);
 
-gulp.task('archive-switches', ['compile-switches'], function () {
-	return gulp.src('tmp/lambda/switches.js')
-		.pipe(zip('artifact.zip'))
-		.pipe(gulp.dest('tmp/riffraff/packages/switchesLambda'))
-		.pipe(gulp.dest('tmp/riffraff/packages/switchboardAPILambda/switchesLambda'));
+gulp.task('archive', ['riffraff-deploy'], function () {
+	return gulp.src('tmp/lambda/*.js')
+		.pipe(foreach(function (stream, file) {
+			const targetName = file.relative.replace(/\.js$/, 'Lambda');
+			return stream
+				.pipe(zip('artifact.zip'))
+				.pipe(gulp.dest('tmp/riffraff/packages/' + targetName))
+				.pipe(gulp.dest('tmp/riffraff/packages/switchboardAPILambda/' + targetName));
+		}));
 });
-gulp.task('archive-status', ['compile-status'], function () {
-	return gulp.src('tmp/lambda/status.js')
-		.pipe(zip('artifact.zip'))
-		.pipe(gulp.dest('tmp/riffraff/packages/statusLambda'))
-		.pipe(gulp.dest('tmp/riffraff/packages/switchboardAPILambda/statusLambda'));
-});
-gulp.task('archive-toggle', ['compile-toggle'], function () {
-	return gulp.src('tmp/lambda/toggle.js')
-		.pipe(zip('artifact.zip'))
-		.pipe(gulp.dest('tmp/riffraff/packages/toggleLambda'))
-		.pipe(gulp.dest('tmp/riffraff/packages/switchboardAPILambda/toggleLambda'));
-});
-
-gulp.task('archive', ['riffraff-deploy', 'archive-switches', 'archive-status', 'archive-toggle']);
 
 gulp.task('package', ['archive'], function () {
 	return gulp.src('tmp/riffraff/**/*')
