@@ -145,8 +145,9 @@ tap.test('does nothing if the switch is already in the desired state', test => {
 		stage: 'STAGE',
 		s3: DEFAULT_S3,
 		logger: DEFAULT_LOGGER,
-		callback (err) {
+		callback (err, data) {
 			test.ifError(err);
+			test.deepEqual(data, { alreadyOn: true });
 			test.end();
 		}
 	});
@@ -191,8 +192,9 @@ tap.test('saves the new state when email should not be sent', test => {
 			}
 		}, DEFAULT_S3),
 		logger: DEFAULT_LOGGER,
-		callback (err) {
+		callback (err, data) {
 			test.ifError(err);
+			test.deepEqual(data, { alreadyOn: false });
 			test.end();
 		}
 	});
@@ -263,8 +265,9 @@ tap.test('saves the new state when email is sent correctly', test => {
 			}
 		},
 		logger: DEFAULT_LOGGER,
-		callback (err) {
+		callback (err, data) {
 			test.ifError(err);
+			test.deepEqual(data, { alreadyOn: true, canModify: false });
 			test.end();
 		}
 	});

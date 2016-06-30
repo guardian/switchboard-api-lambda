@@ -54,7 +54,7 @@ function isValidRequest (switchName, switchStatus, status, switchToToggle, user,
 	} else if (!user || !isUserAllowed(user.email, switchToToggle, userGroups)) {
 		callback(new Error('User is not authorized to toggle ' + switchName));
 	} else if (previousValue === newValue) {
-		callback(null);
+		callback(null, status);
 	} else {
 		return true;
 	}
@@ -66,7 +66,7 @@ function toggle ({switchName, switchStatus, store, switchToToggle, switchesDefin
 	sendEmailIfNecessary({switchToToggle, userGroups: switchesDefinition.userGroups, email, logger})
 	.then(() => {
 		logger.info('Trying to store updated switch');
-		store(newStatus, (err) => callback(err));
+		store(newStatus, (err) => callback(err, newStatus));
 	})
 	.catch(callback);
 }

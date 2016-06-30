@@ -6,8 +6,8 @@
   "private": true,
   "license": "Apache-2.0",
   "scripts": {
-    "pretest": "gulp lint",
     "test": "gulp compile && tap test",
+    "posttest": "gulp lint",
     "deploy": "gulp deploy"
   },
   "devDependencies": {
