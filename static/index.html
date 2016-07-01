@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en" class="html__unknownUser">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>Switch Admin</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <!-- build:css css/minified.css -->
+        <link rel="stylesheet" type="text/css" href="css/main.css">
+        <!-- endbuild -->
+        <!-- build:js js/bundle.js async defer -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/1.0.25/vue.min.js"></script>
+        <script src="../node_modules/vue/dist/vue.min.js"></script>
+        <script src="js/load.js" async defer></script>
+        <!-- endbuild -->
+    </head>
+    <body class="body__unknownUser">
+        <div class="imageOverlay js-loading">
+            Loading from API..
+        </div>
+
+        <div class="mainContent">
+            <switch-card
+                v-for="switch in switches"
+                :name="switch.name"
+                :description="switch.description"
+                :status="!!status[switch.name]"
+                :triggers-email="switch.emailOnChange"
+                :in-preferred-state="[switch.preferredState, status[switch.name]]"
+                :preferred-state="switch.preferredState"
+                :user-has-permission="[email, switch.canModify, userGroups]"
+                :action-url="[switch.name, api, status[switch.name]]"
+            ></switch-card>
+        </div>
+
+        <template id="loginTemplate">
+            <form action="//login{{ domain }}/login" method="get">
+                <input type="hidden" name="returnUrl" value="https://{{ app }}{{ domain }}" />
+                <button class="button brightButton">Login</button>
+            </form>
+        </template>
+
+        <template id="errorTemplate">
+            <p>There seems to be an error: {{ msg }}</p>
+            <login />
+        </template>
+
+        <template id="switchboardCard">
+            <div class="card">
+                <div :class="{
+                    cardTitle: true,
+                    switchedOn: status,
+                    switchedOff: !status
+                }">
+                    {{ name }}
+                </div>
+                <div class="cardDescription">
+                    {{ description }}
+                    <p class="note email" v-if="triggersEmail">Toggling this switch triggers an email alert</p>
+                    <p class="note preferred" v-if="!inPreferredState">The preferred state for this switch is '{{ preferredState ? "on" : "off" }}</code>'</p>
+                </div>
+                <div class="cardAction">
+                    <form
+                        action="{{ actionUrl }}"
+                        method="post"
+                        v-if="userHasPermission"
+                        @submit.prevent="toggle"
+                    >
+                        <button
+                            type="submit"
+                            name="{{ name }}"
+                            :class="{
+                                switchedOn: status,
+                                switchedOff: !status,
+                                button: true,
+                                loadingAction: loading
+                            }"
+                        >
+                            <span v-if="loading">Loading &hellip;</span>
+                            <span v-else>Turn {{ status ? 'off' : 'on' }}</span>
+                        </button>
+
+                        <span class="errorMessage" v-if="error">{{ error }}</span>
+                    </form>
+                    <button class="button noPermission" disabled v-else>
+                        You do not have permission to modify this switch
+                    </button>
+                </div>
+            </div>
+        </template>
+    </body>
+</html>

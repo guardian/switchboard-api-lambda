@@ -63,3 +63,20 @@ It's an authenticated request that requires two path parameters `{switch}` and `
 
 * `npm test` to run your tests once.
 * `nodemon --exec 'npm test' --ignore tmp` to watch your files and run tests on save.
+
+
+
+## Static files
+
+`static` contains the static UI that talks to switchboard lambda.
+
+### Setup
+
+These steps can be done once
+
+ * Set up nginx mappings using [dev-nginx](https://github.com/guardian/dev-nginx).
+ * `npm install -g http-server`
+
+### Run
+
+Run `http-server static -p 3000` from the root of this project and go to switchboard.local.dev-gutools.co.uk

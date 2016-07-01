@@ -1,0 +1,148 @@
+html, body {
+    margin: 0;
+    padding: 0;
+}
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+
+.body__knownUser {
+    background-color: #bb634d;
+    margin: 0;
+}
+.html__knownUser {
+    font-size: 18px;
+    line-height: 1.5;
+    font-family: "Roboto","Helvetica","Arial",sans-serif;
+    font-weight: normal;
+    box-sizing: border-box;
+}
+.body__unknownUser {
+    overflow-x: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    font-size: 20px;
+    -webkit-font-smoothing: antialiased
+    font-family: "Georgia",serif;
+}
+.html__unknownUser {
+    background: url(../images/mary_cullen_1952.jpg) no-repeat center center fixed;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+}
+.mainAction {
+    color: white;
+    background-color: rgba(187, 99, 77, 0.96);
+    padding: 2em 4em;
+    border: 1px solid #aaa;
+    border-radius: 2px;
+    box-shadow: 0 2px 5px 0 rgba(170, 170, 170, 0.4), 0 2px 10px 0 rgba(170, 170, 170, 0.4);
+}
+.imageOverlay {
+    color: white;
+    background-color: rgba(187, 99, 77, 0.96);
+    padding: 2em 4em;
+    border: 1px solid #aaa;
+    border-radius: 2px;
+    box-shadow: 0 2px 5px 0 rgba(170, 170, 170, 0.4), 0 2px 10px 0 rgba(170, 170, 170, 0.4);
+}
+
+.mainContent {
+    margin-top: 3em;
+    display: flex;
+    flex-flow: row wrap;
+    padding: 0 2em;
+}
+
+.card {
+    position: relative;
+    overflow: hidden;
+    background-color: #F9F9FF;
+    border-radius: 2px;
+    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
+    margin-bottom: 1em;
+    margin-right: 1em;
+    flex: 1 0 400px;
+    display: flex;
+    flex-direction: column;
+}
+
+.cardTitle {
+    padding: 0.6em 1.2em;
+    font-size: 120%;
+    border-bottom: 1px solid #E0E0E0;
+}
+.cardDescription {
+    padding: 0.4em 1.2em 1em;
+    flex: 1;
+}
+.cardAction {
+    padding: 0.2em 1.2em 1.2em;
+}
+
+.switchedOn {
+    background-color: #A1BE95;
+}
+.switchedOff {
+    background-color: #E9EFF2;
+}
+
+.button {
+    border: none;
+    border-radius: 2px;
+    color: #000;
+    position: relative;
+    height: 36px;
+    min-width: 64px;
+    padding: 0 1.4em;
+    display: inline-block;
+    font-size: 14px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0;
+    overflow: hidden;
+    outline: none;
+    cursor: pointer;
+    text-decoration: none;
+    text-align: center;
+    line-height: 36px;
+    vertical-align: middle;
+}
+
+.brightButton {
+    background-color: white;
+}
+
+.note {
+    font-size: 80%;
+    color: #BD2A4E;
+    margin-bottom: 0;
+}
+
+.email::before {
+    content: '\2709';
+    padding-right: 0.3em;
+    font-size: 150%;
+    vertical-align: middle;
+    line-height: 0;
+}
+.preferred::before {
+    content: '\26A0';
+    padding-right: 0.3em;
+    font-size: 130%;
+    vertical-align: middle;
+    line-height: 0;
+}
+.errorMessage::before {
+    content: '\26A0';
+    color: #BD2A4E;
+    margin-right: 0.2em;
+}
+.loadingAction {
+    pointer-events: none;
+    opacity: 0.5;
+}

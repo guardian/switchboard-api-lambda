@@ -10,6 +10,27 @@ packages:
             prefixStack: false
             prefixStage: true
             publicReadAcl: false
+    switchboardStatic:
+        type: aws-s3
+        data:
+            bucket: cms-fronts-static-assets
+            cacheControl:
+                - pattern: .*\\.js$
+                  value: public, max-age=315360000
+                - pattern: .*\\.css$
+                  value: public, max-age=315360000
+                - pattern: .*\\.jpg$
+                  value: public, max-age=315360000
+                - pattern: .*
+                  value: public, max-age=60
+            mimeTypes:
+                js: application/javascript
+                css: text/css
+                jpg: image/jpeg
+            prefixPackage: true
+            prefixStack: false
+            prefixStage: true
+            publicReadAcl: true
     switchesLambda:
         type: aws-lambda
         data:
@@ -44,6 +65,7 @@ recipes:
     upload:
         actionsBeforeApp:
             - switchboardAPILambda.uploadStaticFiles
+            - switchboardStatic.uploadStaticFiles
     lambdas:
         actionsBeforeApp:
             - switchesLambda.updateLambda
