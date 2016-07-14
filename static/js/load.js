@@ -156,7 +156,7 @@ function registerComponents () {
                 coerce: function (val) {
                     if (val && 'length' in val) {
                         const switchName = val[0], api = val[1], status = val[2];
-                        return [api, switchName, status ? 'off' : 'on'].join('/');
+                        return [api, 'status', switchName, status ? 'off' : 'on'].join('/');
                     } else {
                         return '/';
                     }
