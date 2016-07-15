@@ -70,12 +70,19 @@ function changeState (url, localView) {
         mode: 'cors',
         credentials: 'include'
     })
-    .then(result => {
+    .then(function (response) {
+        if (response.ok) {
+            return response.json();
+        } else {
+            return Promise.reject(new Error('Invalid server response'));
+        }
+    })
+    .then(function (result) {
         localView.loading = false;
         localView.error = '';
         mainView.status = result;
     })
-    .catch(error => {
+    .catch(function (error) {
         localView.loading = false;
         localView.error = error.message;
     });
