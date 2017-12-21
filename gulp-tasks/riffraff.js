@@ -1,6 +1,6 @@
 var gulp = require('gulp');
 var foreach = require('gulp-foreach');
-var yaml = require('gulp-yaml');
+// var yaml = require('gulp-yaml');
 var zip = require('gulp-zip');
 var path = require('path');
 process.env.ARTEFACT_PATH = path.join(__dirname, '..');
@@ -8,11 +8,11 @@ var riffraff = require('node-riffraff-artefact');
 
 var DEPLOY_SOURCE = 'conf/deploy.yml';
 
-gulp.task('riffraff-deploy', function () {
-	return gulp.src(DEPLOY_SOURCE)
-		.pipe(yaml({ space: 4 }))
-		.pipe(gulp.dest('tmp/riffraff'));
-});
+// gulp.task('riffraff-deploy', function () {
+// 	return gulp.src(DEPLOY_SOURCE)
+// 		.pipe(yaml({ space: 4 }))
+// 		.pipe(gulp.dest('tmp/riffraff'));
+// });
 
 gulp.task('riffraff-deploy-dev', ['riffraff-deploy'], function () {
 	gulp.watch(DEPLOY_SOURCE, ['riffraff-deploy']);
