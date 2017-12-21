@@ -1,0 +1,74 @@
+regions: [eu-west-1]
+stacks: [cms-fronts]
+templates:
+  lambda:
+    type: aws-lambda
+    parameters:
+      bucket: composer-dist
+      prefixStack: false
+deployments:
+  switchboardAPILambda:
+    type: aws-s3
+    parameters:
+      bucket: facia-dist
+      cacheControl: public, max-age=315360000
+      prefixPackage: true
+      prefixStack: false
+      prefixStage: true
+      publicReadAcl: false
+
+  switchboardStatic:
+    type: aws-s3
+    parameters:
+      bucket: cms-fronts-static-assets
+      cacheControl:
+        - pattern: .*\\.js$
+          value: public, max-age=315360000
+        - pattern: .*\\.css$
+          value: public, max-age=315360000
+        - pattern: .*\\.jpg$
+          value: public, max-age=315360000
+        - pattern: .*
+          value: public, max-age=60
+      mimeTypes: {
+        "js": "application/javascript",
+        "css": "text/css",
+        "jpg": "image/jpeg"
+      }
+      prefixPackage: true
+      prefixStack: false
+      prefixStage: true
+      publicReadAcl: true
+  
+  switchesLambda:
+    template: lambda
+    parameters:
+      fileName: artifact.zip
+      functionNames:
+        - switchboard-api-lambda-CODE-SwitchesLambda-UT3HFLJJ757G
+        - switchboard-api-lambda-PROD-SwitchesLambda-ZPMFKILIJXN8
+    dependencies:
+     - switchboardAPILambda
+     - switchboardStatic
+
+  statusLambda:
+    template: lambda
+    parameters:
+      fileName: artifact.zip
+      functionNames:
+        - switchboard-api-lambda-CODE-SwitchesLambda-UT3HFLJJ757G
+        - switchboard-api-lambda-PROD-SwitchesLambda-ZPMFKILIJXN8
+    dependencies:
+     - switchboardAPILambda
+     - switchboardStatic
+
+  toggleLambda:
+    template: lambda
+    parameters:
+      fileName: artifact.zip
+      functionNames:
+        - switchboard-api-lambda-CODE-ToggleLambda-BBMSCN2BCWN9
+        - switchboard-api-lambda-PROD-ToggleLambda-11K0NTYZVU0F1
+    dependencies:
+    - switchboardAPILambda
+    - switchboardStatic
