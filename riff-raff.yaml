@@ -43,7 +43,7 @@ deployments:
   switchesLambda:
     template: lambda
     parameters:
-      fileName: artifact.zip
+      fileName: switchboard-api-lambda.zip
       functionNames:
         - switchboard-api-lambda-CODE-SwitchesLambda-UT3HFLJJ757G
         - switchboard-api-lambda-PROD-SwitchesLambda-ZPMFKILIJXN8
@@ -54,7 +54,7 @@ deployments:
   statusLambda:
     template: lambda
     parameters:
-      fileName: artifact.zip
+      fileName: switchboard-api-lambda.zip
       functionNames:
         - switchboard-api-lambda-CODE-SwitchesLambda-UT3HFLJJ757G
         - switchboard-api-lambda-PROD-SwitchesLambda-ZPMFKILIJXN8
@@ -65,7 +65,7 @@ deployments:
   toggleLambda:
     template: lambda
     parameters:
-      fileName: artifact.zip
+      fileName: switchboard-api-lambda.zip
       functionNames:
         - switchboard-api-lambda-CODE-ToggleLambda-BBMSCN2BCWN9
         - switchboard-api-lambda-PROD-ToggleLambda-11K0NTYZVU0F1
