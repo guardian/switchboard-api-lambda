@@ -5,6 +5,7 @@ templates:
     type: aws-lambda
     parameters:
       prefixStack: false
+      bucket: facia-dist
 deployments:
   switchboardAPILambda:
     type: aws-s3
@@ -36,6 +37,7 @@ deployments:
   
   switchesLambda:
     template: lambda
+    contentDirectory: switchboard-api-lambda
     parameters:
       fileName: switchboard-api-lambda.zip
       functionNames:
@@ -47,6 +49,7 @@ deployments:
 
   statusLambda:
     template: lambda
+    contentDirectory: switchboard-api-lambda
     parameters:
       fileName: switchboard-api-lambda.zip
       functionNames:
@@ -58,6 +61,7 @@ deployments:
 
   toggleLambda:
     template: lambda
+    contentDirectory: switchboard-api-lambda
     parameters:
       fileName: switchboard-api-lambda.zip
       functionNames:
