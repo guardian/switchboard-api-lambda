@@ -5,6 +5,9 @@
   "version": "1.0.0",
   "private": true,
   "license": "Apache-2.0",
+  "cloudformation": "false",
+  "isAwsLambda": "true",
+  "riffraffFile": "./riff-raff.yaml",
   "scripts": {
     "test": "gulp compile && tap test",
     "posttest": "gulp lint",
