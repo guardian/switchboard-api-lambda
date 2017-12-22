@@ -4,7 +4,7 @@ templates:
   lambda:
     type: aws-lambda
     parameters:
-      bucket: composer-dist
+      bucket: facia-dist
       prefixStack: false
 deployments:
   switchboardAPILambda:
@@ -12,9 +12,7 @@ deployments:
     parameters:
       bucket: facia-dist
       cacheControl: public, max-age=315360000
-      prefixPackage: true
       prefixStack: false
-      prefixStage: true
       publicReadAcl: false
 
   switchboardStatic:
@@ -35,15 +33,12 @@ deployments:
         "css": "text/css",
         "jpg": "image/jpeg"
       }
-      prefixPackage: true
       prefixStack: false
-      prefixStage: true
-      publicReadAcl: true
   
   switchesLambda:
     template: lambda
     parameters:
-      fileName: switchboard-api-lambda/switchboard-api-lambda.zip
+      fileName: switchboard-api-lambda.zip
       functionNames:
         - switchboard-api-lambda-CODE-SwitchesLambda-UT3HFLJJ757G
         - switchboard-api-lambda-PROD-SwitchesLambda-ZPMFKILIJXN8
@@ -54,7 +49,7 @@ deployments:
   statusLambda:
     template: lambda
     parameters:
-      fileName: switchboard-api-lambda/switchboard-api-lambda.zip
+      fileName: switchboard-api-lambda.zip
       functionNames:
         - switchboard-api-lambda-CODE-SwitchesLambda-UT3HFLJJ757G
         - switchboard-api-lambda-PROD-SwitchesLambda-ZPMFKILIJXN8
@@ -65,7 +60,7 @@ deployments:
   toggleLambda:
     template: lambda
     parameters:
-      fileName: switchboard-api-lambda/switchboard-api-lambda.zip
+      fileName: switchboard-api-lambda.zip
       functionNames:
         - switchboard-api-lambda-CODE-ToggleLambda-BBMSCN2BCWN9
         - switchboard-api-lambda-PROD-ToggleLambda-11K0NTYZVU0F1
