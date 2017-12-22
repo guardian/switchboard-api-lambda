@@ -4,7 +4,6 @@ templates:
   lambda:
     type: aws-lambda
     parameters:
-      bucket: facia-dist
       prefixStack: false
 deployments:
   switchboardAPILambda:
