@@ -37,7 +37,7 @@ deployments:
   
   switchesLambda:
     template: lambda
-    contentDirectory: switchboard-api-lambda
+    contentDirectory: switchboardAPILambda
     parameters:
       fileName: switchboard-api-lambda.zip
       functionNames:
@@ -48,7 +48,7 @@ deployments:
 
   statusLambda:
     template: lambda
-    contentDirectory: switchboard-api-lambda
+    contentDirectory: switchboardAPILambda
     parameters:
       fileName: switchboard-api-lambda.zip
       functionNames:
@@ -59,7 +59,7 @@ deployments:
 
   toggleLambda:
     template: lambda
-    contentDirectory: switchboard-api-lambda
+    contentDirectory: switchboardAPILambda
     parameters:
       fileName: switchboard-api-lambda.zip
       functionNames:

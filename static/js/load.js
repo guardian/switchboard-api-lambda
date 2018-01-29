@@ -21,9 +21,9 @@ function fetchJSON (endpoint) {
 
 function load () {
     Promise.all([
-        fetchJSON('//login' + DOMAIN + '/whoami'),
-        fetchJSON('//switchboard-api' + DOMAIN + '/switches'),
-        fetchJSON('//switchboard-api' + DOMAIN + '/status')
+        fetchJSON('https://login' + DOMAIN + '/whoami'),
+        fetchJSON('https://switchboard-api' + DOMAIN + '/switches'),
+        fetchJSON('https://switchboard-api' + DOMAIN + '/status')
     ])
     .then(showSwitches)
     .catch(handleAPIError)
