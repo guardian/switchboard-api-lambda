@@ -23,7 +23,7 @@ gulp.task('archive', ['compile', 'riffraff-deploy'], function () {
 		.pipe(foreach(function (stream, file) {
 			const targetName = file.relative.replace(/\.js$/, 'Lambda');
 			return stream
-				.pipe(zip('artifact.zip'))
+				.pipe(zip('switchboardApiLambda.zip'))
 				.pipe(gulp.dest('tmp/riffraff/packages/' + targetName))
 				.pipe(gulp.dest('tmp/riffraff/packages/switchboardAPILambda/' + targetName));
 		}));
@@ -31,7 +31,7 @@ gulp.task('archive', ['compile', 'riffraff-deploy'], function () {
 
 gulp.task('package', ['archive', 'static'], function () {
 	return gulp.src('tmp/riffraff/**/*')
-		.pipe(zip('artifacts.zip'))
+		.pipe(zip('switchboardApiLambda.zip'))
 		.pipe(gulp.dest('tmp/'));
 });
 
