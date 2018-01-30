@@ -11,11 +11,10 @@
   "scripts": {
     "test": "gulp compile && tap test",
     "posttest": "gulp lint",
-    "deploy": "VERBOSE=true ARTEFACT_PATH=$PWD riffraff-artefact"
+    "deploy": "gulp deploy"
   },
   "devDependencies": {
     "aws-sdk": "^2.4.3",
-    "babel-preset-es2015-rollup": "^1.1.1",
     "gulp": "^3.9.1",
     "gulp-cssmin": "^0.1.7",
     "gulp-eslint": "^2.0.0",
