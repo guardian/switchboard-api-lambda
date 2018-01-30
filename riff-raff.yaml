@@ -6,6 +6,7 @@ templates:
     parameters:
       prefixStack: false
       bucket: facia-dist
+
 deployments:
   switchboardAPILambda:
     type: aws-s3
