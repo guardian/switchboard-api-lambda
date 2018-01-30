@@ -3,18 +3,13 @@ stacks: [cms-fronts]
 templates:
   lambda:
     type: aws-lambda
+    contentDirectory: switchboardApiLambda
     parameters:
       prefixStack: false
       bucket: facia-dist
+      fileName: switchboardApiLambda.zip
 
 deployments:
-  switchboardAPILambda:
-    type: aws-s3
-    parameters:
-      bucket: facia-dist
-      cacheControl: public, max-age=315360000
-      prefixStack: false
-      publicReadAcl: false
 
   switchboardStatic:
     type: aws-s3
@@ -36,35 +31,59 @@ deployments:
       }
       prefixStack: false
   
-  switchesLambda:
+  switchesLambdaUpload:
     template: lambda
-    contentDirectory: switchboardApiLambda
+    actions: [uploadLambda]
     parameters:
-      fileName: switchboardApiLambda.zip
       functionNames:
         - "switches-lambda-switchboard-api-"
     dependencies:
-     - switchboardAPILambda
      - switchboardStatic
 
-  statusLambda:
+  statusLambdaUpload:
     template: lambda
-    contentDirectory: switchboardApiLambda
+    actions: [uploadLambda]
     parameters:
-      fileName: switchboardApiLambda.zip
       functionNames:
         - "status-lambda-switchboard-api-"
     dependencies:
-     - switchboardAPILambda
      - switchboardStatic
 
-  toggleLambda:
+  toggleLambdaUpload:
     template: lambda
-    contentDirectory: switchboardApiLambda
+    actions: [uploadLambda]
     parameters:
-      fileName: switchboardApiLambda.zip
       functionNames:
         - "status-lambda-switchboard-api-"
     dependencies:
-    - switchboardAPILambda
-    - switchboardStatic
+     - switchboardStatic
+
+  switchesLambdaUpdate:
+    template: lambda
+    actions: [updateLambda]
+    parameters:
+      functionNames:
+        - "switches-lambda-switchboard-api-"
+    dependencies:
+     - switchboardStatic
+     - switchesLambdaUpload
+
+  statusLambdaUpdate:
+    template: lambda
+    actions: [updateLambda]
+    parameters:
+      functionNames:
+        - "status-lambda-switchboard-api-"
+    dependencies:
+     - switchboardStatic
+     - statusLambdaUpload
+
+  toggleLambdaUpdate:
+    template: lambda
+    actions: [updateLambda]
+    parameters:
+      functionNames:
+        - "status-lambda-switchboard-api-"
+    dependencies:
+     - switchboardStatic
+     - toggleLambdaUpload
