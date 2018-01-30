@@ -1,5 +1,5 @@
 {
-  "name": "switchboardApiLambda",
+  "name": "switchboard-api-lambda",
   "projectName": "cms-fronts::switchboard-api-lambda",
   "description": "Lambda to handle switchboard API requests",
   "version": "1.0.0",
