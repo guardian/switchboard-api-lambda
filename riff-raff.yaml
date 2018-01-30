@@ -42,7 +42,7 @@ deployments:
     dependencies:
      - switchboardStatic
 
-  lswitchboardLambdaUpdate:
+  switchboardLambdaUpdate:
     template: lambda
     actions: [updateLambda]
     parameters:
