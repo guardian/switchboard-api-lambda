@@ -31,7 +31,7 @@ deployments:
       }
       prefixStack: false
   
-  lambdaUpload:
+  switchboardLambdaUpload:
     template: lambda
     actions: [uploadLambda]
     parameters:
@@ -42,7 +42,7 @@ deployments:
     dependencies:
      - switchboardStatic
 
-  switchesLambdaUpdate:
+  lswitchboardLambdaUpdate:
     template: lambda
     actions: [updateLambda]
     parameters:
@@ -51,4 +51,4 @@ deployments:
         - "status-lambda-switchboard-api-"
         - "toggle-lambda-switchboard-api-"
     dependencies:
-     - switchesLambdaUpload
+     - switchboardLambdaUpload
