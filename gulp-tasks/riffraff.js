@@ -35,7 +35,7 @@ gulp.task('package', ['archive', 'static'], function () {
 		.pipe(gulp.dest('tmp/'));
 });
 
-gulp.task('deploy', ['package'], function (cb) {
+gulp.task('deploy', ['static'], function (cb) {
 	riffraff.settings.leadDir = path.join(__dirname, '../tmp');
 
 	riffraff.s3FilesUpload().then(function () {

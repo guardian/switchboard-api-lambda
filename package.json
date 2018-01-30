@@ -11,7 +11,7 @@
   "scripts": {
     "test": "gulp compile && tap test",
     "posttest": "gulp lint",
-    "deploy": "gulp deploy"
+    "deploy": "VERBOSE=true ARTEFACT_PATH=$PWD riffraff-artefact && gulp deploy"
   },
   "devDependencies": {
     "aws-sdk": "^2.4.3",
