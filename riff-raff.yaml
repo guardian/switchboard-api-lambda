@@ -31,30 +31,14 @@ deployments:
       }
       prefixStack: false
   
-  switchesLambdaUpload:
+  lambdaUpload:
     template: lambda
     actions: [uploadLambda]
     parameters:
       functionNames:
         - "switches-lambda-switchboard-api-"
-    dependencies:
-     - switchboardStatic
-
-  statusLambdaUpload:
-    template: lambda
-    actions: [uploadLambda]
-    parameters:
-      functionNames:
         - "status-lambda-switchboard-api-"
-    dependencies:
-     - switchboardStatic
-
-  toggleLambdaUpload:
-    template: lambda
-    actions: [uploadLambda]
-    parameters:
-      functionNames:
-        - "status-lambda-switchboard-api-"
+        - "toggle-lambda-switchboard-api-"
     dependencies:
      - switchboardStatic
 
@@ -64,26 +48,7 @@ deployments:
     parameters:
       functionNames:
         - "switches-lambda-switchboard-api-"
+        - "status-lambda-switchboard-api-"
+        - "toggle-lambda-switchboard-api-"
     dependencies:
-     - switchboardStatic
      - switchesLambdaUpload
-
-  statusLambdaUpdate:
-    template: lambda
-    actions: [updateLambda]
-    parameters:
-      functionNames:
-        - "status-lambda-switchboard-api-"
-    dependencies:
-     - switchboardStatic
-     - statusLambdaUpload
-
-  toggleLambdaUpdate:
-    template: lambda
-    actions: [updateLambda]
-    parameters:
-      functionNames:
-        - "status-lambda-switchboard-api-"
-    dependencies:
-     - switchboardStatic
-     - toggleLambdaUpload
