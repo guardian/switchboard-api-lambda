@@ -37,9 +37,9 @@ deployments:
   
   switchesLambda:
     template: lambda
-    contentDirectory: switchboardAPILambda
+    contentDirectory: switchboardApiLambda
     parameters:
-      fileName: switchboardAPILambda.zip
+      fileName: switchboardApiLambda.zip
       functionNames:
         - "switches-lambda-switchboard-api-"
     dependencies:
@@ -48,9 +48,9 @@ deployments:
 
   statusLambda:
     template: lambda
-    contentDirectory: switchboardAPILambda
+    contentDirectory: switchboardApiLambda
     parameters:
-      fileName: switchboardAPILambda.zip
+      fileName: switchboardApiLambda.zip
       functionNames:
         - "status-lambda-switchboard-api-"
     dependencies:
@@ -59,9 +59,9 @@ deployments:
 
   toggleLambda:
     template: lambda
-    contentDirectory: switchboardAPILambda
+    contentDirectory: switchboardApiLambda
     parameters:
-      fileName: switchboardAPILambda.zip
+      fileName: switchboardApiLambda.zip
       functionNames:
         - "status-lambda-switchboard-api-"
     dependencies:
