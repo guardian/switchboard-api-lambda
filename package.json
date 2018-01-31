@@ -6,6 +6,7 @@
   "private": true,
   "license": "Apache-2.0",
   "cloudformation": false,
+  "buildDir": "tmp/lambda",
   "isAwsLambda": true,
   "riffraffFile": "./riff-raff.yaml",
   "scripts": {

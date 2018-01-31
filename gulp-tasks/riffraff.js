@@ -35,7 +35,7 @@ var riffraff = require('node-riffraff-artefact');
 // 		.pipe(gulp.dest('tmp/'));
 // });
 
-gulp.task('deploy', ['static'], function (cb) {
+gulp.task('deploy', ['static', 'compile'], function (cb) {
 	riffraff.settings.leadDir = path.join(__dirname, '../tmp');
 
 	riffraff.s3FilesUpload().then(function () {
