@@ -20,11 +20,10 @@ function fetchJSON (endpoint) {
 }
 
 function load () {
-    console.log('HERE');
     Promise.all([
-        fetchJSON('https://login' + DOMAIN + '/whoami'),
-        fetchJSON('https://switchboard-api' + DOMAIN + '/switches'),
-        fetchJSON('https://switchboard-api' + DOMAIN + '/status')
+        fetchJSON('//login' + DOMAIN + '/whoami'),
+        fetchJSON('//switchboard-api' + DOMAIN + '/switches'),
+        fetchJSON('//switchboard-api' + DOMAIN + '/status')
     ])
     .then(showSwitches)
     .catch(handleAPIError)
