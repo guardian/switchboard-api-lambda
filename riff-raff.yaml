@@ -1,16 +1,7 @@
 regions: [eu-west-1]
 stacks: [cms-fronts]
-templates:
-  lambda:
-    type: aws-lambda
-    contentDirectory: switchboardApiLambda
-    parameters:
-      prefixStack: false
-      bucket: facia-dist
-      fileName: switchboardApiLambda.zip
 
 deployments:
-
   switchboardStatic:
     type: aws-s3
     parameters:
@@ -31,24 +22,16 @@ deployments:
       }
       prefixStack: false
   
-  switchboardLambdaUpload:
-    template: lambda
-    actions: [uploadLambda]
+  switchboardLambdas:
+    type: aws-lambda
+    contentDirectory: switchboardApiLambda
     parameters:
+      prefixStack: false
+      bucket: facia-dist
+      fileName: switchboardApiLambda.zip
       functionNames:
         - "switches-lambda-switchboard-api-"
         - "status-lambda-switchboard-api-"
         - "toggle-lambda-switchboard-api-"
     dependencies:
      - switchboardStatic
-
-  switchboardLambdaUpdate:
-    template: lambda
-    actions: [updateLambda]
-    parameters:
-      functionNames:
-        - "switches-lambda-switchboard-api-"
-        - "status-lambda-switchboard-api-"
-        - "toggle-lambda-switchboard-api-"
-    dependencies:
-     - switchboardLambdaUpload
