@@ -20,6 +20,7 @@ function fetchJSON (endpoint) {
 }
 
 function load () {
+    console.log('HERE');
     Promise.all([
         fetchJSON('https://login' + DOMAIN + '/whoami'),
         fetchJSON('https://switchboard-api' + DOMAIN + '/switches'),
