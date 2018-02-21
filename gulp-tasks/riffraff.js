@@ -6,9 +6,7 @@ var riffraff = require('node-riffraff-artefact');
 gulp.task('deploy', ['static', 'compile'], function (cb) {
 	riffraff.settings.leadDir = path.join(__dirname, '../tmp');
 
-	riffraff.s3FilesUpload().then(function () {
-		cb();
-	}).catch(function (error) {
-		cb(error);
-	});
+	riffraff.s3FilesUpload()
+		.then(cb)
+		.catch(cb)
 });
