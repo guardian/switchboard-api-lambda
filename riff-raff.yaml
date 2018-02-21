@@ -1,0 +1,37 @@
+regions: [eu-west-1]
+stacks: [cms-fronts]
+
+deployments:
+  switchboardStatic:
+    type: aws-s3
+    parameters:
+      bucket: cms-fronts-static-assets
+      cacheControl:
+        - pattern: .*\\.js$
+          value: public, max-age=315360000
+        - pattern: .*\\.css$
+          value: public, max-age=315360000
+        - pattern: .*\\.jpg$
+          value: public, max-age=315360000
+        - pattern: .*
+          value: public, max-age=60
+      mimeTypes: {
+        "js": "application/javascript",
+        "css": "text/css",
+        "jpg": "image/jpeg"
+      }
+      prefixStack: false
+  
+  switchboardLambdas:
+    type: aws-lambda
+    contentDirectory: switchboardApiLambda
+    parameters:
+      prefixStack: false
+      bucket: facia-dist
+      fileName: switchboardApiLambda.zip
+      functionNames:
+        - "switches-lambda-switchboard-api-"
+        - "status-lambda-switchboard-api-"
+        - "toggle-lambda-switchboard-api-"
+    dependencies:
+     - switchboardStatic

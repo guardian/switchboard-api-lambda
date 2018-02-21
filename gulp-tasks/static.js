@@ -15,13 +15,13 @@ gulp.task('html', function () {
 	.pipe(gulpif('*.css', cssmin()))
 	.pipe(gulpif('!*.html', rev()))
 	.pipe(revReplace())
-	.pipe(gulp.dest('tmp/riffraff/packages/switchboardStatic'));
+	.pipe(gulp.dest('tmp/switchboardStatic'));
 });
 
 gulp.task('images', function () {
 	return gulp.src(SOURCE_IMAGES)
 		.pipe(imagemin())
-		.pipe(gulp.dest('tmp/riffraff/packages/switchboardStatic/images'));
+		.pipe(gulp.dest('tmp/switchboardStatic/images'));
 });
 
 gulp.task('html-dev', ['html'], function () {
